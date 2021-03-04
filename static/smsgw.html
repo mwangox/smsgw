@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base href="/">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <!-- For users -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./stylesheets/user.css" type="text/css" >
+    <title>Personalised SMSGW</title>
+    <style>
+        @font-face {
+            font-family: "lato";
+            src: url("fonts\Lato2OFL\latoFont\Lato-Thin.ttf");
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html, #main-content {
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            
+        }
+      
+        #login-main {
+            width: 30%;
+            height: 28%;
+            border: thin solid #999966;
+            padding: 0;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -80%);
+            background-color: #999966;
+            font-family: lato;
+        }
+        
+        #login-header {
+            margin-left: 4px;
+            font-family: lato;
+        }
+        
+        #login-body {
+            width: 98%;
+            height: 85%;
+            border: 1px solid #999966;
+            margin: 4px;
+            background-color: #ffffff;
+            padding: 15px;
+        }
+        
+        #login-form label {
+            width: 20%;
+            margin-right: 50px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        
+        #login-form input {
+            width: 60%;
+            border: thin solid #999966;
+        }
+        
+        #login-form input[type="submit"]:hover {
+            cursor: pointer;
+            background-color: #999966;
+        }
+    </style>
+    <!-- Style for main page-->
+    <style>
+        #header {
+            width: 100%;
+            text-align: center;
+            margin-top: 2px;
+            height: 80px;
+        }
+        #main-body{
+            display: flex;
+            width: 100%;
+            height: 100%;
+            
+        }
+        #main {
+            text-align: center;
+            width: 80%;
+            border: #999966 solid 1px;
+            padding: 5px;
+        }
+        
+        #sidebar,
+        #main {
+            float: left;
+        }
+        
+        #sidebar {
+            width: 19.75%;
+            border: #999966 solid 1px;
+            margin-right: 0.25%;
+        }
+        
+        #form_data input[type="text"],
+        input[type="file"],
+        select[name="senderId"] {
+            margin-right: 40px;
+        }
+        
+        #sidebar button {
+            width: 100%;
+        }
+        
+        #sidebar button:hover {
+            cursor: pointer;
+        }
+        
+        #sidebar #menu-bar {
+            padding: 2px;
+            background-color: #999966;
+        }
+        
+        #report table {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+            width: 100%;
+        }
+       
+        #report table th,#report table td {
+            border: 1px solid grey;
+            padding: 2px;
+        }
+        
+        #report table th {
+            background-color: #999966;
+            color: aliceblue;
+        }
+        
+        #report {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        /* users css */
+     
+        #users-table td a.delete {
+            color: #999966;
+        }
+        #users-table td i {
+            font-size: 19px;
+        }   
+
+        #users-table td a.delete:hover{
+            cursor: pointer;
+        }
+        /* add user css*/
+        form#user_form {
+          display:grid;
+          grid-template-columns: max-content max-content;
+          grid-gap:4px;
+        }
+        form#user_form label { 
+            text-align:left;
+         }
+        form#user_form label:after { 
+            content: ":"; 
+        }
+    
+        #add-user {
+            display: inline-block;
+            padding: 5px 5px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #999966;
+            border: none;
+            width: 150px;
+            border-radius:2px;
+        }
+
+        #add-user:hover {
+            background-color: #c2c2a3
+        }
+
+    </style>
+</head>
+<body id="main-content">
+
+    <div id="login-main">
+        <div id="login-header" >
+            Personalised SMSGW
+        </div>
+        <div id="login-body">
+            <form id="login-form" enctype="multipart/form-data" action="/loginHandler" method="post">
+                <label>Username:</label>
+                <input type="text" name="username">
+                <br>
+                <label>Password:</label>
+                <input type="password" name="password">
+                <br>
+                <label></label>
+                <input type="submit" name="submit" value="Login">
+            </form>
+        </div>
+</div>
+</body>
+<script>
+    $("#login-body").on("submit", "#login-form", function(event) {
+        event.preventDefault();
+        var form_data = new FormData(this);
+        $.ajax({
+            url: "/smsgwHandler",
+            data: form_data,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $("#main-content").html(data);
+            }
+        });
+    });
+</script>
+
+<!-- Home Scripts-->
+<script>
+    $("#main-content").on("submit", "#form_data", function(event) {
+        event.preventDefault();
+        var form_data = new FormData(this);
+        form_data.append("name", $("#username").text().replace(/\s/g,''));
+        $.ajax({
+            url: "/uploadCSV",
+            data: form_data,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert(data);
+            },
+            error: function (result) {
+                alert(result);
+            },
+            complete: function (data) {
+                $('#form_data')[0].reset(); // this will reset the form fields
+            }
+        });
+    });
+
+   $("#main-content").on("click", "#send-sms-btn",function() {
+        var sendMessageFormStart = `<form enctype="multipart/form-data" method="post" id="form_data">
+                                         <label>Message:</label> <input type="text" name="message">
+                                         <label>Load Contacts:</label> <input type="file" name="fileName">
+                                         <label>SenderId:</label> 
+                                         <select name="senderId">`;
+                                         
+        var sendMessageFormEnd =   `</select><input type="submit" value="Submit SMS"></form>`;
+                                       
+        $.ajax({
+            url: "/getSenders",
+            type: 'post',
+            data: {username: $("#username").text().replace(/\s/g,'')},
+            success: function(data) {
+                var jsonData = JSON.parse(data);
+                var sendersArray = jsonData.senders.split("|");
+                var sendersOptions = "";
+                for(var i = 0; i < sendersArray.length; i++){
+                   sendersOptions = sendersOptions +"<option>" + sendersArray[i] + "</option>";
+                }
+                //Create Form
+               $("#main").html(sendMessageFormStart + sendersOptions + sendMessageFormEnd);
+            }
+        });
+    });
+
+    $("#main-content").on("click","#reports-btn",function() {
+        $.ajax({
+            url: "/getMessageSubmitted",
+            type: 'post',
+            data: {username: $("#username").text().replace(/\s/g,'')},
+            success: function(data) {
+                var dataObject = JSON.parse(data);
+                //alert(dataObject.data[0].username);
+                if(dataObject.data.length == 0){
+                    $("#main").html("TODO Feature");
+                }else{
+                    var tableDataHeader =`<div id="report" >
+                                    <table id="report-table">
+                                        <thead>
+		                                <tr>
+			                                <th>MSISDN</th>
+			                                <th>Message</th>
+			                                <th>MessageId</th>
+			                                <th>Command status</th>
+			                                <th>Timestamp</th>
+                                        </tr></thead><tbody>`;
+                    var tableDataBody = "";                       
+                    var tableDataFooter = '</tbody></table></div>';
+                    //Loop through the data field to get submitted messages
+                    for(i = 0; i < dataObject.data.length; i++ ){
+                        tableDataBody = tableDataBody +
+                                        '<tr>' +
+                                        '<td>'+dataObject.data[i].msisdn+'</td>'+
+                                        '<td>'+dataObject.data[i].message+'</td>'+
+                                        '<td>'+dataObject.data[i].messageId+'</td>'+
+                                        '<td>'+dataObject.data[i].status_code+'</td>'+
+                                        '<td>'+dataObject.data[i].timestamp+'</td>'+
+                                        '</tr>';
+                    }
+                    var tableData = tableDataHeader + tableDataBody + tableDataFooter;
+                    $("#main").html(tableData);
+                }
+            }
+        });
+    });
+    $('#report-table').DataTable();
+   
+    $("#main-content").on("click", "#users-mgt-btn",function() {                            
+        $.ajax({
+            url: "/getUsers",
+            type: 'post',
+            data: {username: $("#username").text().replace(/\s/g,'')},
+            success: function(data) {
+               $("#main").html(data);
+               $('#users-table').DataTable();
+            }
+        });   
+    });
+   
+    $("#main-content").on("click", "#add-user",function() {     
+            user_template = `<h3>Add New User</h3>
+                            <form enctype="multipart/form-data" method="post" id="user_form">
+                                <label>Name</label> <input type="text" name="add_fullName">
+                                <label>Username</label> <input type="text" name="add_username">
+                                <label>Password</label> <input type="text" name="add_password">
+                                <label>GroupId</label> <input type="text" name="add_groupId">
+                                <label>Admin</label> <input type="text" name="add_admin">
+                                <input type="submit" name="add_submit">
+                             </form>`   
+            $("#main").html(user_template);                     
+    });
+
+    $("#main-content").on("submit", "#user_form", function(event) {
+        event.preventDefault();
+        var form_data = new FormData(this);
+        form_data.append("name", $("#username").text().replace(/\s/g,''));
+        $.ajax({
+            url: "/userAdd",
+            data: form_data,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert(data);
+                //reload users 
+                loadUsers();
+            }
+        });
+    });
+
+    $("#main-content").on("click", ".delete", function(){
+        var username = $(this).parent().parent().find(".username").text()
+        $.ajax({
+            url: `/userRemove?username=${username}&removedBy=${$("#username").text().replace(/\s/g,'')}`,
+            type: 'post',
+            success: function(data) {
+                alert(data);
+                //reload users
+                loadUsers();
+            }
+        });
+    })
+    function loadUsers(){
+        $.ajax({
+            url: "/getUsers",
+            type: 'post',
+            data: {
+                username: $("#username").text().replace(/\s/g,'')
+            },
+            success: function(data) {
+                $("#main").html(data);
+                $('#users-table').DataTable();
+            }
+        }); 
+    }
+</script>
+
+</html>

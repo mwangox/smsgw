@@ -1,0 +1,18 @@
+
+#users-table td a.view {
+    color: #03A9F4;
+}
+#users-table td a.edit {
+    color: #FFC107;
+}
+#users-table td a.delete {
+    color: #E34724;
+}
+#users-table td i {
+    font-size: 19px;
+}    
+
+#login-header{
+    color: #E34724;
+    background-color: #03A9F4;
+}

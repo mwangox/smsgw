@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<addresses>
+   <address-group id="jefembe">
+       <sender>Jefembe01</sender>
+		<sender>Jefembe02</sender>
+   </address-group>
+    <address-group id="mbefeje">
+        <sender>mbefeje01</sender>
+		<sender>mbefeje Staff</sender>
+        <sender>mbefeje02</sender>
+   </address-group>
+</addresses>

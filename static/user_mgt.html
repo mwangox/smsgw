@@ -1,0 +1,29 @@
+<button id="add-user">New User</button>
+<table id="users-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Admin</th>
+            <th>CreationDate</th>
+            <th>GroupId</th>
+            <th>LastLogin</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .User}}
+        <tr>
+            <td>{{.FullName}}</td>
+            <td class="username">{{.Username}}</td>
+            <td>{{.Admin}}</td>
+            <td>{{.CreationDate}}</td>
+            <td>{{.GroupId}}</td>  
+            <td>{{.LastLogin}}</td>
+            <td>
+                <a  class="delete"  title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+            </td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>

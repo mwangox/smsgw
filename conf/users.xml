@@ -1,0 +1,11 @@
+ <users>
+   <user>
+     <fullName>Israel Mwangoka</fullName>
+     <username>israelm</username>
+     <password>$2a$10$.YZBEKIU/IBxuwfxWJ.OSuI7Ai1SqOT.UZjxj2T/E2o4k/gfI95f.</password>
+     <admin>true</admin>
+     <groupId>jefembe</groupId>
+     <creationDate>2020-09-09 09:09:09</creationDate>
+     <lastLogin>2020-09-23 11:04:02</lastLogin>
+   </user>
+ </users>
