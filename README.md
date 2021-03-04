@@ -11,7 +11,7 @@ File called smsgw will be generated
 
 Access the smsgw portal at: http://yourhostnameorip:9083/smsgw
 
-![image](https://user-images.githubusercontent.com/32011741/109934077-27116480-7cdd-11eb-8773-61a2c7881c45.png)
+![image](https://user-images.githubusercontent.com/32011741/109936773-4ad5aa00-7cdf-11eb-8050-ac0c9e1f29ae.png)
 
 # Features
 1. Multiple SMSC accounts backed with Goroutines.
