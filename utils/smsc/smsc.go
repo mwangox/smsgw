@@ -18,7 +18,6 @@ import (
 var tx *smpp.Transmitter
 var conn smpp.ConnStatus
 var messageQueue chan MessageDetails
-var MaxQueueSizeReached = errors.New("Max messageQueue size reached, consider adding more accounts")
 
 type MessageDetails struct {
 	Msisdn   string
@@ -37,6 +36,7 @@ type SmscGroup struct {
 	SmppPassword   string `xml:"smppPassword"`
 	SmppHost       string `xml:"smppHost"`
 	SmppSystemType string `xml:"smppSystemType"`
+	SmppMaxConn    int    `xml:"smppMaxConn"`
 }
 
 func init() {
@@ -57,17 +57,18 @@ func init() {
 			}
 			continue
 		}
+		for cxn := 0; cxn < v.SmppMaxConn; cxn++ {
+			go func(goId, subid int, v *SmscGroup) {
 
-		go func(goId int, v *SmscGroup) {
-
-			logger.Info("Start goroutine [%d] with: [%s, %s, %v]", goId, tx.User, tx.Addr, v)
-			for {
-				for messageDetails := range messageQueue {
-					logger.Info("Goroutine [%d] got message: %v", goId, messageDetails)
-					SendSmsWithTx(messageDetails.Msisdn, messageDetails.Msg, messageDetails.SenderId, tx)
+				logger.Info("Start goroutine [%d], sub-goroutine [%d] with: [%s, %s, %v]", goId, subid, tx.User, tx.Addr, v)
+				for {
+					for messageDetails := range messageQueue {
+						logger.Info("Goroutine [%d] , sub-goroutine [%d] got message: %v", goId, subid, messageDetails)
+						SendSmsWithTx(messageDetails.Msisdn, messageDetails.Msg, messageDetails.SenderId, tx)
+					}
 				}
-			}
-		}(k, v)
+			}(k, cxn, v)
+		}
 	}
 }
 
@@ -77,10 +78,6 @@ func SendSms(msisdn, msg, senderId string) error {
 		Msg:      msg,
 		SenderId: senderId,
 	}
-	// if len(messageQueue) == 200000 {
-	// 	log.Printf("%v, %s", MaxQueueSizeReached, msisdn)
-	// 	return MaxQueueSizeReached
-	// }
 	messageQueue <- messageDetails
 	return nil
 }
