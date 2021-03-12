@@ -19,6 +19,7 @@ Access the smsgw portal at: http://yourhostnameorip:9083/smsgw
 3. Multiple sender IDs support per user group.
 4. Role based portal access.
 5. Customized Bulk SMS using simple template.
+6. Multiple smpp connections per account.
 
 # ToDO
 1. Reporting
