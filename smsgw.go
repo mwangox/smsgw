@@ -92,7 +92,7 @@ func CsvProcessor(csvParams *CsvParams) {
 		}
 	}
 	logger.Info("Concatenated combo message: %s", messageCombo)
-	smsc.SendSms(msisdn, messageCombo, csvParams.SenderId)
+	go smsc.SendSms(msisdn, messageCombo, csvParams.SenderId)
 }
 
 func SmsgwHandler(w http.ResponseWriter, r *http.Request) {
