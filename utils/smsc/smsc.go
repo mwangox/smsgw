@@ -40,7 +40,7 @@ type SmscGroup struct {
 }
 
 func init() {
-	messageQueue = make(chan MessageDetails, 2)
+	messageQueue = make(chan MessageDetails)
 	smppAccounts, err := LoadSmppAccounts()
 	if err != nil {
 		logger.Fatal("Failed to load smsc accounts: %v", err)
@@ -48,21 +48,24 @@ func init() {
 	smppFailedCount := 0
 	for k, v := range smppAccounts {
 		//Bind to smsc
-		tx, conn = GetTx(v)
+		tx, conn := GetTx(v)
 		if conn.Status() != smpp.Connected {
 			smppFailedCount++
-			log.Printf("Skip sprawn goroutine [%d] with this account: [%v, %s, %d]", k, conn.Error(), v.SmppUsername, smppFailedCount)
+			logger.Info("Skip sprawn goroutine [%d] with this account: [%v, %s, %d]", k, conn.Error(), v.SmppUsername, smppFailedCount)
 			if smppFailedCount == len(smppAccounts) {
 				log.Fatalf("Smpp client failed to start: [totalFailures=%d]", smppFailedCount)
 			}
 			continue
 		}
+
 		go func(goId int, v *SmscGroup) {
-			log.Printf("Start goroutine [%d] with: [%s, %s, %v]", goId, tx.User, tx.Addr, v)
+
+			logger.Info("Start goroutine [%d] with: [%s, %s, %v]", goId, tx.User, tx.Addr, v)
 			for {
-				messageDetails := <-messageQueue
-				log.Printf("Goroutine [%d] got message: %v", goId, messageDetails)
-				SendSmsWithTx(messageDetails.Msisdn, messageDetails.Msg, messageDetails.SenderId, tx)
+				for messageDetails := range messageQueue {
+					logger.Info("Goroutine [%d] got message: %v", goId, messageDetails)
+					SendSmsWithTx(messageDetails.Msisdn, messageDetails.Msg, messageDetails.SenderId, tx)
+				}
 			}
 		}(k, v)
 	}
@@ -74,10 +77,10 @@ func SendSms(msisdn, msg, senderId string) error {
 		Msg:      msg,
 		SenderId: senderId,
 	}
-	if len(messageQueue) == 2 {
-		log.Printf("%v, %s", MaxQueueSizeReached, msisdn)
-		return MaxQueueSizeReached
-	}
+	// if len(messageQueue) == 200000 {
+	// 	log.Printf("%v, %s", MaxQueueSizeReached, msisdn)
+	// 	return MaxQueueSizeReached
+	// }
 	messageQueue <- messageDetails
 	return nil
 }
@@ -85,7 +88,7 @@ func SendSms(msisdn, msg, senderId string) error {
 func SendSmsWithTx(msisdn, msg, senderId string, tx *smpp.Transmitter) {
 	msisdns := []string{msisdn}
 	guid := uuid.New().String()
-	log.Printf("Send to smsc: [uuid=%s, msisdn=%s, msg=%s]", guid, msisdn, msg)
+	logger.Info("Send to smsc: [ uuid=%s, msisdn=%s, msg=%s ]", guid, msisdn, msg)
 	sm, err := tx.Submit(&smpp.ShortMessage{
 		Src:      senderId,
 		DstList:  msisdns,
@@ -93,10 +96,10 @@ func SendSmsWithTx(msisdn, msg, senderId string, tx *smpp.Transmitter) {
 		Register: pdufield.NoDeliveryReceipt,
 	})
 	if err != nil {
-		log.Printf("Failed to submit SMS: [%v, %s, %s]", err, msisdn, guid)
+		logger.Error("Failed to submit SMS: [ %v, %s, %s ]", err, msisdn, guid)
 		return
 	}
-	log.Printf("Submitted successully: [%s, %s, %s, %s]", sm.RespID(), msisdn, guid, tx.User)
+	logger.Info("Submitted successully: [ %s, %s, %s, %s ]", sm.RespID(), msisdn, guid, tx.User)
 }
 
 func GetTx(smscGroup *SmscGroup) (*smpp.Transmitter, smpp.ConnStatus) {
@@ -108,7 +111,7 @@ func GetTx(smscGroup *SmscGroup) (*smpp.Transmitter, smpp.ConnStatus) {
 	}
 	// Create persistent connection, wait for the first status.
 	conn := <-tx.Bind()
-	log.Printf("Bind to smsc with: [user=%s, status=%s]", tx.User, conn.Status())
+	logger.Info("Bind to smsc with: [ user=%s, status=%s ]", tx.User, conn.Status())
 	return tx, conn
 }
 
