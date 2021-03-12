@@ -5,11 +5,13 @@
         <smppPassword>jefembe</smppPassword>
         <smppHost>127.0.0.1:6693</smppHost>
         <smppSystemType>smpp</smppSystemType>
+        <smppMaxConn>5</smppMaxConn>
     </smscGroup>
     <smscGroup id="2">
         <smppUsername>jefembe01</smppUsername>
         <smppPassword>jefembe</smppPassword>
         <smppHost>127.0.0.1:6693</smppHost>
         <smppSystemType>smpp</smppSystemType>
+        <smppMaxConn>5</smppMaxConn>
     </smscGroup>
 </smsc>
